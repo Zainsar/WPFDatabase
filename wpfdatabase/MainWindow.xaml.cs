@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Numerics;
 
 namespace wpfdatabase
 {
@@ -40,6 +41,39 @@ namespace wpfdatabase
             con.Close();
         }
 
+        private Boolean IsValid()
+        {
+            if (name.Text == String.Empty)
+            {
+                MessageBox.Show("Name Cannot be empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (email.Text == String.Empty)
+            {
+                MessageBox.Show("Email Cannot be empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (age.Text == String.Empty)
+            {
+                MessageBox.Show("Age Cannot be empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (cellNo.Text == String.Empty)
+            {
+                MessageBox.Show("CellNo Cannot be empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (city.Text == String.Empty)
+            {
+                MessageBox.Show("City Cannot be empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         private void Clear_data()
         {
             name.Clear();
@@ -52,6 +86,30 @@ namespace wpfdatabase
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             Clear_data();
+        }
+
+        private void Insert_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsValid())
+            {
+                SqlCommand addstd = new SqlCommand("insert into students values(@fname,@email,@age,@cellno,@city)", con);
+
+                con.Open();
+
+                addstd.CommandType = CommandType.Text;
+
+                addstd.Parameters.AddWithValue("@fname", name.Text);
+                addstd.Parameters.AddWithValue("@email", email.Text);
+                addstd.Parameters.AddWithValue("@age", age.Text);
+                addstd.Parameters.AddWithValue("@cellno", cellNo.Text);
+                addstd.Parameters.AddWithValue("@city", city.Text);
+
+                addstd.ExecuteNonQuery();
+                con.Close();
+                LoadData();
+                Clear_data();
+            }
+
         }
     }
 }
