@@ -76,6 +76,7 @@ namespace wpfdatabase
 
         private void Clear_data()
         {
+            SID.Clear();
             name.Clear();
             email.Clear();
             age.Clear();
@@ -110,6 +111,26 @@ namespace wpfdatabase
                 Clear_data();
             }
 
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (SID.Text != string.Empty)
+            {
+                SqlCommand deletestd = new SqlCommand("Delete from students where id= @SID", con);
+                con.Open();
+                deletestd.CommandType = CommandType.Text;
+                deletestd.Parameters.AddWithValue("@SID", SID.Text);
+                deletestd.ExecuteNonQuery();
+                con.Close();
+                LoadData();
+                Clear_data();
+                MessageBox.Show("Student data has been Delete", "Deleted Successfully", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Student Id required For data Delete", "Can't Delete Data", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
