@@ -132,5 +132,63 @@ namespace wpfdatabase
                 MessageBox.Show("Student Id required For data Delete", "Can't Delete Data", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void fetch_Click(object sender, RoutedEventArgs e)
+        {
+            if (SID.Text != string.Empty)
+            {
+                SqlCommand fetchdata = new SqlCommand("select * from students where id= @SID", con);
+                con.Open();
+                fetchdata.CommandType = CommandType.Text;
+                fetchdata.Parameters.AddWithValue("@SID", SID.Text);
+                SqlDataReader reader = fetchdata.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    name.Text = reader["firstname"].ToString();
+                    email.Text = reader["email"].ToString();
+                    age.Text = reader["age"].ToString();
+                    cellNo.Text = reader["cellno"].ToString();
+                    city.Text = reader["city"].ToString();
+
+                    MessageBox.Show("Student data has been Fetch Successfully", "Fetch Successfully", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid Id", "Invalid Id", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                con.Close();
+            }
+            else
+            {
+                MessageBox.Show("Student Id required For data Update", "Can't Update Data", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+        private void UpdateStudent(object sender, RoutedEventArgs e)
+        {
+            if (IsValid())
+            {
+                SqlCommand UpdateStudentdet = new SqlCommand("update students set firstname=@fname,email=@email,age=@age,cellno=@cellno,city=@city where id= @SID", con);
+
+                con.Open();
+
+                UpdateStudentdet.CommandType = CommandType.Text;
+
+                UpdateStudentdet.Parameters.AddWithValue("@fname", name.Text);
+                UpdateStudentdet.Parameters.AddWithValue("@email", email.Text);
+                UpdateStudentdet.Parameters.AddWithValue("@age", age.Text);
+                UpdateStudentdet.Parameters.AddWithValue("@cellno", cellNo.Text);
+                UpdateStudentdet.Parameters.AddWithValue("@city", city.Text);
+                UpdateStudentdet.Parameters.AddWithValue("@SID", SID.Text);
+
+                UpdateStudentdet.ExecuteNonQuery();
+                con.Close();
+                LoadData();
+                Clear_data();
+                MessageBox.Show("Student data has been Updated Successfully", "Updated Successfully", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
     }
 }
